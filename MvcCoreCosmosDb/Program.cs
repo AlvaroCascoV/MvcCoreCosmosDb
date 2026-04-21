@@ -1,6 +1,18 @@
+using Microsoft.Azure.Cosmos;
+using MvcCoreCosmosDb.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+string cosmosDbString = builder.Configuration.GetValue<string>("AzureKeys:CosmosDb");
+CosmosClient client = new CosmosClient(cosmosDbString);
+Container container = client.GetContainer("vehiculoscosmos", "containercoches");
+builder.Services.AddSingleton<CosmosClient>(x => client);
+builder.Services.AddTransient<Container>(x => container);
+builder.Services.AddTransient<ServiceCosmosDb>();
+
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

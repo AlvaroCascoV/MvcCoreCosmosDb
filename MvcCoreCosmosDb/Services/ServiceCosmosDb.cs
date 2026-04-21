@@ -56,15 +56,16 @@ namespace MvcCoreCosmosDb.Services
 
         //BUSCAR COCHES. PARA BUSCAR SE HACE POR SU ID Y POR
         //SU PARTITION KEY, QUE EN NUESTRO CASO ES EL MISMO ID
-        public async Task<Coche> FindCocheAsync(int id)
+        public async Task<Coche> FindCocheAsync(string id)
         {
-            ItemResponse<Coche> response = await this.containerCosmos.ReadItemAsync<Coche>(id.ToString(), new PartitionKey(id));
+            ItemResponse<Coche> response = await this.containerCosmos.ReadItemAsync<Coche>(id, new PartitionKey(id));
             return response.Resource;
         }
 
-        public async Task DeleteCocheAsync(int id)
-        { 
-            await this.containerCosmos.DeleteItemAsync<Coche>(id.ToString(), new PartitionKey(id));
+
+        public async Task DeleteCocheAsync(string id)
+        {
+            await this.containerCosmos.DeleteItemAsync<Coche>(id, new PartitionKey(id));
         }
 
         public async Task UpdateCocheAsync(Coche car)
@@ -72,6 +73,20 @@ namespace MvcCoreCosmosDb.Services
             //EXISTE UN METODO LLAMADO UPSERT Y QUE SI LO ENCUENTRA
             //LO MODIFICA Y SINO, LO CREA
             await this.containerCosmos.UpsertItemAsync<Coche>(car, new PartitionKey(car.Id));
+        }
+
+        public async Task<List<Coche>> GetCochesMarcaAsync(string marca)
+        {
+            string sql = $"SELECT * FROM c WHERE c.Marca = '{marca}'";
+            QueryDefinition definition = new QueryDefinition(sql);
+            var query = this.containerCosmos.GetItemQueryIterator<Coche>(definition);
+            List<Coche> coches = new List<Coche>();
+            while (query.HasMoreResults)
+            {
+                var result = await query.ReadNextAsync();
+                coches.AddRange(result);
+            }
+            return coches;
         }
     }
 }

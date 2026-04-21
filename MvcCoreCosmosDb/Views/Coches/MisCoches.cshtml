@@ -1,0 +1,65 @@
+﻿@model IEnumerable<MvcCoreCosmosDb.Models.Coche>
+
+@{
+    ViewData["Title"] = "MisCoches";
+}
+
+<h1>MisCoches</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Create New</a>
+</p>
+
+<form method="post">
+    <label>Marca</label>
+    <input type="text" name="marca" class="form-control" />
+    <button type="submit" class="btn btn-primary">Buscar</button>
+</form>
+
+@if (Model != null)
+{
+    
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Marca
+            </th>
+            <th>
+                Modelo
+            </th>
+            <th>
+                Imagen
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.Id
+            </td>
+            <td>
+                @item.Marca
+            </td>
+            <td>
+                @item.Modelo
+            </td>
+            <td>
+                <img src="@item.Imagen" alt="@item.Imagen" style="max-width: 100px; max-height: 100px;" />
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+}

@@ -4,6 +4,6 @@
     {
         public string Tipo { get; set; }
         public int Caballos { get; set; }
-        public bool Turbo { get; set; }
+        public int Turbo { get; set; }
     }
 }
